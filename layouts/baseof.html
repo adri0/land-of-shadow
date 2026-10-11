@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="{{ or site.Language.Locale site.Language.Lang }}" data-theme="dark"
+    {{- range $name, $value := site.Params.htmlAttributes }} {{ printf "%s=%q" $name $value | safeHTMLAttr }}{{ end }}>
+<head>
+    {{ partial "head.html" . }}
+</head>
+<body>
+    {{ partial "header.html" . }}
+    {{- /* A full-width strip under the header, for a page to fill in. */}}
+    {{ block "banner" . }}{{ end }}
+
+    <div class="main-wrapper">
+        <div class="container">
+            {{ block "main" . }}{{ end }}
+        </div>
+    </div>
+
+    {{ partial "footer.html" . }}
+</body>
+</html>

@@ -1,0 +1,50 @@
+{{- /*
+  Adapted from kopi's breadcrumb.html to put "[edit this page]" on the same line,
+  at the right. The JSON-LD below is the theme's, unchanged.
+*/ -}}
+<div class="breadcrumb-bar">
+<div class="breadcrumb">
+    <a href="{{ .Site.Home.Permalink }}">Home</a>
+    {{ range .Ancestors.Reverse }}
+        {{ if not .IsHome }}
+        / <a href="{{ .Permalink }}">{{ .LinkTitle }}</a>
+        {{ end }}
+    {{ end }}
+    / <span>{{ .Title }}</span>
+</div>
+{{ partial "edit-link.html" . }}
+</div>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "{{ .Site.Home.Permalink }}"
+    }
+    {{- $position := 1 -}}
+    {{- range .Ancestors.Reverse -}}
+        {{- if not .IsHome -}}
+        {{- $position = add $position 1 -}}
+        ,{
+          "@type": "ListItem",
+          "position": {{ $position }},
+          "name": {{ .LinkTitle | jsonify }},
+          "item": "{{ .Permalink }}"
+        }
+        {{- end -}}
+    {{- end -}}
+    {{- $position = add $position 1 -}}
+    ,{
+      "@type": "ListItem",
+      "position": {{ $position }},
+      "name": {{ .Title | jsonify }},
+      "item": "{{ .Permalink }}"
+    }
+  ]
+}
+</script>

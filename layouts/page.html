@@ -1,0 +1,32 @@
+{{ define "main" }}
+{{- /*
+  Adapted from kopi's page.html for hand-written pages. kopi's byline,
+  share/bookmark buttons and prev/next post navigation are dropped.
+
+  The content's ## headings become a table of contents, in a sticky box beside
+  the text on wide screens. Markdown with no # heading makes Fragments nest the
+  h2s under an empty level-1 entry, so both levels are walked to find them.
+*/ -}}
+{{- $toc := slice }}
+{{- range .Fragments.Headings }}
+  {{- if eq .Level 2 }}{{ $toc = $toc | append . }}{{ end }}
+  {{- range .Headings }}{{ if eq .Level 2 }}{{ $toc = $toc | append . }}{{ end }}{{ end }}
+{{- end }}
+{{ partial "breadcrumb.html" . }}
+<div class="toc-layout">
+  {{- with $toc }}
+  <aside class="toc" aria-label="On this page">
+    <p class="toc-title">On this page</p>
+    <ol>
+      {{- range . }}
+      <li><a href="#{{ .ID }}">{{ .Title | safeHTML }}</a></li>
+      {{- end }}
+    </ol>
+  </aside>
+  {{- end }}
+  <article class="toc-main">
+    <h1>{{ .Title }}</h1>
+    <div class="article-body">{{ .Content }}</div>
+  </article>
+</div>
+{{ end }}

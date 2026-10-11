@@ -1,0 +1,11 @@
+{{ define "main" }}
+{{- /* Generic fallback: every real section has its own layout. */ -}}
+{{ partial "breadcrumb.html" . }}
+<h1>{{ .Title }}</h1>
+{{- with .Content }}<div class="article-body">{{ . }}</div>{{ end }}
+<ul class="widget-list">
+  {{- range .Pages }}
+  <li><a href="{{ .RelPermalink }}">{{ .Title }}</a></li>
+  {{- end }}
+</ul>
+{{ end }}

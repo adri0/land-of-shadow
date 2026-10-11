@@ -1,0 +1,445 @@
+/* --- Land of Shadow ---------------------------------------------------------
+   Built on kopi's tokens (--bg-body, --text-main, --text-muted, --accent,
+   --border, --radius-*), which are re-pointed here at an Elden Ring palette:
+   parchment and umber in light mode, ash-black and Erdtree gold in dark. On
+   top of those, it adds a card surface, a soft gold glow, a link colour and
+   the display/body font stacks, in both themes.
+---------------------------------------------------------------------------- */
+
+:root {
+    --bg-body: #f3ecdc;
+    --bg-card: #f8f3e6;
+    --bg-nav: #f3ecdc;
+    --text-main: #2a2318;
+    --text-muted: #6b604c;
+    --accent: #7a5a14;
+    --border: #d6c8a8;
+
+    --radius-container: 3px;
+    --radius-element: 2px;
+
+    --surface: #eee5cf;
+    --surface-strong: #e8ddc2;
+    --gold-soft: rgba(122, 90, 20, 0.08);
+    --gold-glow: rgba(176, 134, 44, 0.28);
+    --link: #a3460c;
+
+    --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+    --font-body: "EB Garamond", Garamond, Georgia, serif;
+}
+
+[data-theme="dark"] {
+    --bg-body: #0c0b09;
+    --bg-card: #13110d;
+    --bg-nav: #0c0b09;
+    --text-main: #e6dcc3;
+    --text-muted: #9d927b;
+    --accent: #d2ad62;
+    --border: #2f291e;
+
+    --surface: #12100c;
+    --surface-strong: #1a1712;
+    --gold-soft: rgba(210, 173, 98, 0.08);
+    --gold-glow: rgba(210, 173, 98, 0.22);
+    --link: #ffc94d;
+}
+
+/* --- Type & atmosphere --- */
+
+body {
+    font-family: var(--font-body);
+    font-size: 1.075rem;
+    font-variant-numeric: lining-nums;
+    /* A faint wash of grace-light from the top of the page. */
+    background-image:
+        radial-gradient(ellipse 80% 45% at 50% -5%, var(--gold-glow), transparent 70%);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: 0.03em;
+}
+
+h1 { color: var(--accent); }
+
+/* Links in running text: a brighter, warmer hue than --accent, which sits too
+   close to --text-main to read as a link. kopi leaves links outside
+   .article-body undecorated, so .prose-links opts a paragraph in. */
+.article-body a,
+.prose-links a {
+    color: var(--link);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+
+    &:hover { text-decoration-thickness: 2px; }
+}
+
+/* Small-caps labels share the display face. */
+.widget-title,
+.stats-table th,
+.footer-title,
+.nav-links a,
+.pill {
+    font-family: var(--font-display);
+    letter-spacing: 0.08em;
+}
+
+::selection { background-color: var(--gold-glow); }
+
+/* --- Header --- */
+
+.site-header,
+[data-theme="dark"] .site-header {
+    background-color: color-mix(in srgb, var(--bg-body) 92%, transparent);
+    border-bottom: none;
+}
+
+/* A gold rule under the header that fades out towards both edges. */
+.site-header::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent) 20%, var(--accent) 80%, transparent);
+    opacity: 0.55;
+}
+
+.logo {
+    gap: 0.55rem;
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--text-main);
+}
+
+.logo::before { content: none; }
+
+/* The wordmark (params.wordmark) is white-on-transparent; in light mode it is
+   inverted to dark ink so it reads on parchment. */
+.brand-wordmark { display: block; height: auto; }
+
+:root:not([data-theme="dark"]) .brand-wordmark { filter: invert(0.88) sepia(0.35); }
+
+.logo-wordmark {
+    width: auto;
+    height: 38px;
+}
+
+.logo-subtitle {
+    align-self: center;
+    padding-left: 0.65rem;
+    border-left: 1px solid var(--border);
+    font-size: 0.7rem;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent);
+    max-width: 7.5rem;
+}
+
+.logo-mark {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    filter: drop-shadow(0 0 4px var(--gold-glow)) drop-shadow(0 0 10px var(--gold-glow));
+    transition: filter 0.3s ease, transform 0.3s ease;
+}
+
+.logo:hover { color: var(--accent); }
+.logo:hover .logo-mark {
+    filter: drop-shadow(0 0 10px var(--accent));
+    transform: rotate(-6deg) scale(1.05);
+}
+
+@media (max-width: 480px) {
+    .logo { gap: 0.4rem; }
+    .logo-mark { width: 32px; height: 32px; }
+    .logo-wordmark { height: 32px; }
+    .logo-subtitle { font-size: 0.6rem; padding-left: 0.45rem; max-width: 6rem; }
+}
+
+.nav-links a { font-size: 0.85rem; text-transform: uppercase; }
+
+.nav-links a:hover,
+.header-icon:hover,
+.btn:hover,
+.pill-outline:hover {
+    background-color: var(--gold-soft);
+}
+
+@media (min-width: 900px) {
+    .nav-links a { font-size: 0.8rem; }
+    .nav-links a:hover { background-color: transparent; }
+
+    /* Underline becomes a short gold bar with tapered ends. */
+    .nav-links > li > a::after {
+        height: 1px;
+        background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    }
+}
+
+.pill-accent { color: var(--bg-body); }
+
+.back-to-top:hover { box-shadow: 0 0 18px var(--gold-glow); }
+
+/* --- Ornament: a gold rule with a lozenge at its centre --- */
+
+.ornament {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin: 1.25rem 0;
+    color: var(--accent);
+
+    &::before, &::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, currentColor);
+        opacity: 0.6;
+    }
+
+    &::after { background: linear-gradient(90deg, currentColor, transparent); }
+
+    span {
+        width: 7px;
+        height: 7px;
+        transform: rotate(45deg);
+        border: 1px solid currentColor;
+    }
+}
+
+.notice {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+}
+
+/* kopi's reset zeroes all margins, which the theme's own layouts make up for
+   inside .article-body. Data pages are headings + tables, so they need their
+   own rhythm. :where() keeps this at zero specificity: anything more specific
+   (.section-head h2, .article-body h2) still wins. */
+:where(.main-wrapper) {
+    h1 { margin-bottom: 1rem; }
+    h2 { margin: 2.5rem 0 1rem; }
+    h3 { margin: 1.5rem 0 0.75rem; }
+    p { margin-bottom: 1rem; }
+}
+
+.section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin: 2.5rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid;
+    border-image: linear-gradient(90deg, var(--accent), var(--border) 45%, transparent) 1;
+
+    h2, h3 { margin: 0; }
+
+    > a {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    > a:hover { color: var(--accent); }
+}
+
+.split-columns {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem 2rem;
+
+    @include md { grid-template-columns: 1fr 1fr; }
+}
+
+/* --- Tables --- */
+
+/* kopi's base sets `table { display: block }` for horizontal scrolling; data
+   tables (.stats-table) need real table layout, so they scroll via .table-wrap
+   instead. */
+.table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 1rem 0 2rem;
+}
+
+.stats-table {
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    overflow: visible;
+
+    th, td {
+        padding: 0.6rem 0.9rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+        white-space: nowrap;
+    }
+
+    th {
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-muted);
+    }
+
+    tbody tr:hover { background-color: var(--surface); }
+    td a:hover { text-decoration: underline; text-underline-offset: 3px; }
+    tbody tr:last-child td { border-bottom: none; }
+
+    td:not(:first-child) { font-variant-numeric: tabular-nums; }
+
+    .rank {
+        color: var(--text-muted);
+        font-variant-numeric: tabular-nums;
+        width: 2.5rem;
+    }
+}
+
+/* --- Table of contents (page.html; sites can reuse it) ---
+   A sticky box to the right of the page on wide screens; hidden below that,
+   where there's no room beside the tables and bracket. */
+
+.toc-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+
+    @media (min-width: 1100px) {
+        grid-template-columns: minmax(0, 1fr) 13rem;
+        gap: 2rem;
+        align-items: start;
+    }
+}
+
+.toc-main { min-width: 0; }
+
+.toc {
+    display: none;
+
+    @media (min-width: 1100px) {
+        display: block;
+        grid-column: 2;
+        grid-row: 1;
+        position: sticky;
+        top: calc(var(--header-height) + 1.5rem);
+        padding: 1rem 1.1rem;
+        border: 1px solid var(--border);
+        border-top: 2px solid var(--accent);
+        border-radius: var(--radius-container);
+        background: var(--surface);
+    }
+
+    .toc-title {
+        margin: 0 0 0.5rem;
+        font-family: var(--font-display);
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        color: var(--text-muted);
+    }
+
+    ol { margin: 0; padding: 0; list-style: none; }
+    li + li { margin-top: 0.35rem; }
+
+    a {
+        color: var(--text-main);
+        text-decoration: none;
+
+        &:hover { color: var(--accent); }
+    }
+}
+
+/* Anchored sections land below the sticky header, not under it. */
+.toc-main [id] { scroll-margin-top: calc(var(--header-height) + 1rem); }
+
+/* --- Sidebar & footer extras --- */
+
+.widget-list-plain li {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+}
+
+.widget-list-plain li span:last-child {
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+
+.widget-more {
+    display: inline-block;
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.widget-more:hover { color: var(--accent); }
+
+/* "[edit this page]", pointing at a page's source on GitHub: at the right end
+   of the breadcrumb line (_partials/breadcrumb.html), or on its own line
+   where a page has no breadcrumb. */
+.breadcrumb-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0 1rem;
+    margin-bottom: 0.75rem;
+
+    .breadcrumb, .edit-link { margin: 0; }
+}
+
+.edit-link {
+    margin: 0 0 0.75rem;
+    margin-left: auto;
+    text-align: right;
+    font-size: 0.8rem;
+
+    a {
+        color: var(--text-muted);
+
+        &:hover { color: var(--link); }
+    }
+}
+
+.footer-links {
+    display: flex;
+    align-items: baseline;
+    gap: 1.5rem;
+}
+
+/* The icon stays inline, so the link's text shares the other links' baseline;
+   vertical-align lowers the mark onto the text's optical centre. */
+.footer-github .icon-github {
+    width: 1em;
+    height: 1em;
+    margin-right: 0.35em;
+    vertical-align: -0.125em;
+}
+
+.footer-disclaimer {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid;
+    border-image: linear-gradient(90deg, transparent, var(--border), transparent) 1;
+    font-style: italic;
+    font-size: 0.8rem;
+    max-width: 75ch;
+}
