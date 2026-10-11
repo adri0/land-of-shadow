@@ -1,0 +1,63 @@
+{{- /*
+  Adapted from kopi's head.html. Dropped from kopi's version: the PWA manifest
+  and service worker, the blog-post JSON-LD, and the @params passed to main.js
+  (search/radio/PWA config).
+
+  Params: description, homeTitle (the home page's <title>, default site.Title)
+  and logo (an image under assets/, resized for the favicon, the touch icon and
+  og:image; without it, kopi's static/favicon.ico stays the icon). A site adds
+  its own tags (analytics, early scripts) with _partials/hooks/head-end.html.
+*/ -}}
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{{- $description := site.Params.description }}
+{{- if not .IsHome }}
+  {{- with .Params.meta_description }}{{ $description = . }}{{ end }}
+{{- end }}
+<meta name="description" content="{{ $description }}">
+<title>{{ if .IsHome }}{{ site.Params.homeTitle | default site.Title }}{{ else }}{{ .Title }} · {{ site.Title }}{{ end }}</title>
+<link rel="canonical" href="{{ .Permalink }}">
+{{- $logo := "" }}
+{{- with site.Params.logo }}{{ $logo = resources.Get . }}{{ end }}
+{{- with $logo }}
+{{- $favicon := .Resize "64x png" | fingerprint }}
+<link rel="icon" type="image/png" href="{{ $favicon.RelPermalink }}">
+<link rel="apple-touch-icon" href="{{ (.Resize "180x png").RelPermalink }}">
+{{- end }}
+{{- with .OutputFormats.Get "rss" }}
+<link rel="alternate" type="application/rss+xml" href="{{ .Permalink }}" title="{{ site.Title }}">
+{{- end }}
+
+<meta name="theme-color" content="#0c0b09">
+
+<meta property="og:type" content="{{ if .IsPage }}article{{ else }}website{{ end }}">
+<meta property="og:site_name" content="{{ site.Title }}">
+<meta property="og:url" content="{{ .Permalink }}">
+<meta property="og:title" content="{{ if .IsHome }}{{ site.Title }}{{ else }}{{ .Title }}{{ end }}">
+<meta property="og:description" content="{{ $description }}">
+{{- with $logo }}
+<meta property="og:image" content="{{ .Permalink }}">
+{{- end }}
+<meta name="twitter:card" content="summary">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap">
+
+{{- $css := resources.Get "css/main.scss" | toCSS | minify | fingerprint }}
+<link rel="stylesheet" href="{{ $css.RelPermalink }}">
+
+{{- $js := resources.Get "js/main.js" | js.Build (dict "minify" true) | fingerprint }}
+<script type="module" src="{{ $js.RelPermalink }}"></script>
+
+{{- /* Dark unless the visitor chose light with the toggle; the OS colour
+  scheme is deliberately ignored (see assets/js/modules/theme.js). */}}
+<script>
+    (function() {
+        let theme = 'dark';
+        try { if (localStorage.getItem('theme') === 'light') theme = 'light'; } catch (e) {}
+        document.documentElement.setAttribute('data-theme', theme);
+    })();
+</script>
+
+{{ partial "hooks/head-end.html" . }}

@@ -1,0 +1,41 @@
+{{- /* Adapted from kopi's header.html: the Library (bookmarks) icon is dropped.
+  The brand is params.logo, then params.wordmark (an image of the site's name,
+  white on transparent: .brand-wordmark inverts it in light mode, alt text
+  params.wordmarkAlt) or site.Title without one, then params.subtitle. A site
+  adds buttons before the dark-mode toggle with _partials/hooks/header-actions.html. */ -}}
+<header class="site-header">
+    <div class="header-inner">
+        <button class="menu-toggle" id="menuToggle" aria-label="Menu">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+        </button>
+
+        <a href="{{ site.Home.RelPermalink }}" class="logo">
+            {{- with site.Params.logo }}{{ $logo := (resources.Get .).Resize "96x png" }}
+            <img class="logo-mark" src="{{ $logo.RelPermalink }}" width="48" height="48" alt="">
+            {{- end }}
+            {{- with site.Params.wordmark }}{{ $wordmark := (resources.Get .).Resize "x96 png" }}
+            <img class="logo-wordmark brand-wordmark" src="{{ $wordmark.RelPermalink }}" width="{{ div $wordmark.Width 2 }}" height="48" alt="{{ site.Params.wordmarkAlt | default site.Title }}">
+            {{- else }}
+            <span class="logo-title">{{ site.Title }}</span>
+            {{- end }}
+            {{- with site.Params.subtitle }}<span class="logo-subtitle">{{ . }}</span>{{ end }}
+        </a>
+
+        <nav>
+            <ul class="nav-links" id="navLinks">
+                {{- $currentPage := . }}
+                {{- range site.Menus.main }}
+                    {{- $active := or ($currentPage.IsMenuCurrent "main" .) ($currentPage.HasMenuCurrent "main" .) }}
+                    <li><a href="{{ if .Page }}{{ .Page.RelPermalink }}{{ else }}{{ .URL }}{{ end }}" class="{{ if $active }}active{{ end }}">{{ .Name }}</a></li>
+                {{- end }}
+            </ul>
+        </nav>
+
+        <div class="header-actions">
+            {{- partial "hooks/header-actions.html" . }}
+            <button class="header-icon theme-toggle" id="themeToggle" aria-label="Toggle Dark Mode">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            </button>
+        </div>
+    </div>
+</header>

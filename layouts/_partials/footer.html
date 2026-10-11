@@ -1,0 +1,36 @@
+{{- /*
+  Adapted from kopi's footer.html: the cookie-consent banner and the placeholder
+  social links are dropped. The toast container stays -- interactions.js uses
+  it for the "link copied" toast.
+
+  The left column is site.Title, then _partials/hooks/footer-about.html (by
+  default, params.description). The links are the "footer" menu, plus GitHub
+  when params.repo is set. params.disclaimer, if any, goes underneath.
+*/ -}}
+<div id="toastContainer" class="toast-container"></div>
+
+<footer class="site-footer">
+    <div class="container footer-content">
+        <div>
+            <strong class="footer-title">{{ site.Title }}</strong>
+            {{- partial "hooks/footer-about.html" . }}
+        </div>
+        <div class="footer-links">
+            {{- range site.Menus.footer }}
+            <a href="{{ if .Page }}{{ .Page.RelPermalink }}{{ else }}{{ .URL }}{{ end }}">{{ .Name }}</a>
+            {{- end }}
+            {{- with site.Params.repo }}
+            <a class="footer-github" href="{{ . }}">{{ partial "icon-github.html" "" }}GitHub</a>
+            {{- end }}
+        </div>
+    </div>
+    {{- with site.Params.disclaimer }}
+    <div class="container">
+        <p class="footer-disclaimer">{{ . }}</p>
+    </div>
+    {{- end }}
+</footer>
+
+<button id="backToTop" class="back-to-top" aria-label="Back to Top">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+</button>

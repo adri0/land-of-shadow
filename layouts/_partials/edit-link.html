@@ -1,0 +1,16 @@
+{{- /* "[edit this page]": links to the file a page is built from on GitHub.
+       A page can set it as the `source` param (e.g. from a content adapter);
+       otherwise it's the page's own content file. A
+       `source` ending in "/" is a directory and gets a tree link instead of
+       an edit link. Renders nothing without params.repo or a known source,
+       e.g. on the 404 page. */ -}}
+{{- $source := .Params.source | default "" -}}
+{{- if and (not $source) .File -}}
+  {{- $source = printf "content/%s" .File.Path -}}
+{{- end -}}
+{{- with site.Params.repo -}}
+  {{- if $source -}}
+    {{- $mode := cond (strings.HasSuffix $source "/") "tree" "edit" -}}
+    <p class="edit-link"><a href="{{ . }}/{{ $mode }}/main/{{ strings.TrimSuffix "/" $source }}">[edit this page]</a></p>
+  {{- end -}}
+{{- end -}}

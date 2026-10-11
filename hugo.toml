@@ -1,0 +1,6 @@
+# Module config for sites that import this theme. A site's own hugo.toml holds
+# the params and menus (see README.md).
+[module]
+  [module.hugoVersion]
+    extended = true
+    min = "0.157.0"

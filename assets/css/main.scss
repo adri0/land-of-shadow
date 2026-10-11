@@ -1,0 +1,22 @@
+/*
+ * Theme CSS entry point. The base styles in `kopi/` are copied from the kopi
+ * theme (https://github.com/bect/kopi, MIT -- see LICENSES/kopi.txt); its
+ * radio-player and search styles were left behind. `land-of-shadow` re-points
+ * kopi's tokens at the Elden Ring palette and styles the shared layout.
+ *
+ * `site` comes last and is empty here: a site adds its own styles by putting
+ * an `assets/css/_site.scss` in its own repo, which replaces this one.
+ */
+@import "kopi/variables";
+@import "kopi/base";
+@import "kopi/layout";
+@import "kopi/header";
+@import "kopi/components";
+@import "kopi/codeblock";
+@import "kopi/tags";
+@import "kopi/image";
+@import "kopi/table";
+@import "kopi/widgets";
+@import "kopi/post";
+@import "land-of-shadow";
+@import "site";
