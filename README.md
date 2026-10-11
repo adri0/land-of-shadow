@@ -8,7 +8,8 @@ It started from the [kopi](https://github.com/bect/kopi) theme (MIT). Only the p
 kept (`assets/css/kopi/`, `assets/js/kopi/`, `layouts/404.html`, `static/favicon.ico`; see
 `LICENSES/kopi.txt`), and kopi's search, radio player, bookmarks, PWA, cookie banner, taxonomy pages
 and Markdown render hooks were left out. Page navigation uses [Hotwire Turbo](https://turbo.hotwired.dev/)
-8.0.20 (MIT, © 37signals), in `assets/js/vendor/` unmodified from its npm release.
+8.0.20 (MIT, © 37signals), in `assets/js/third_party/` unmodified from its npm release. (Not `vendor/`: Go module
+zips, which Hugo downloads modules as, leave out any directory named `vendor`.)
 
 ## Using it
 
