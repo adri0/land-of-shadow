@@ -4,6 +4,8 @@ A dark, Elden Ring–flavoured Hugo theme: ash-black and Erdtree gold by default
 in light mode, set in Cinzel and EB Garamond. It is the look of
 [scadustats.com](https://scadustats.com/) ([source](https://github.com/adri0/scadustats-site)).
 
+![The scadustats.com home page in Land of Shadow's dark mode: the header, the hero, the latest news and the sidebar's stat widgets](images/screenshot-home-dark.png)
+
 It started from the [kopi](https://github.com/bect/kopi) theme (MIT). Only the parts in use were
 kept (`assets/css/kopi/`, `assets/js/kopi/`, `layouts/404.html`, `static/favicon.ico`; see
 `LICENSES/kopi.txt`), and kopi's search, radio player, bookmarks, PWA, cookie banner, taxonomy pages
