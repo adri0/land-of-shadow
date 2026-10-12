@@ -16,7 +16,7 @@ zips, which Hugo downloads modules as, leave out any directory named `vendor`.)
 
 ## Using it
 
-Requires Hugo **Extended** >= 0.157 and Go. Import it as a Hugo module:
+Requires Hugo **Extended** >= 0.158 and Go. Import it as a Hugo module:
 
 ```toml
 # hugo.toml
