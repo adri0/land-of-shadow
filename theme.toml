@@ -1,0 +1,19 @@
+# Metadata for the Hugo theme gallery (themes.gohugo.io). The supported Hugo
+# versions are in hugo.toml.
+name = "Land of Shadow"
+license = "MIT"
+licenselink = "https://github.com/adri0/land-of-shadow/blob/main/LICENSE"
+description = "A dark, Elden Ring–flavoured theme: ash-black and Erdtree gold, parchment and umber in light mode, set in Cinzel and EB Garamond. Reference pages with a table of contents and edit links, and a news section."
+homepage = "https://github.com/adri0/land-of-shadow"
+demosite = "https://scadustats.com/"
+tags = ["dark", "light", "gaming", "responsive", "blog", "documentation"]
+features = ["dark and light mode", "table of contents", "news section with a latest-posts block", "edit-this-page links", "Hugo module"]
+
+[author]
+  name = "Adriano Oliveira"
+  homepage = "https://github.com/adri0"
+
+[original]
+  author = "Rahmat Subekti"
+  homepage = "https://github.com/bect"
+  repo = "https://github.com/bect/kopi"
