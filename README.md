@@ -31,6 +31,32 @@ The theme gives you `baseof.html`, `page.html` (with a table of contents built f
 headings), `section.html`, `404.html` and the head, header, footer and breadcrumb partials. It
 doesn't have a home page layout: add your own `layouts/home.html`.
 
+### News
+
+Put posts in `content/news/` (with a `_index.md` for the section's title) and the theme lists them,
+newest first, at `/news/`. `hugo new content news/2026-10-11-my-post.md` starts a post from the
+theme's archetype, which takes the title from the file name without the date. Front matter:
+
+| Field | Used for |
+|---|---|
+| `title`, `date` | The post's heading and date |
+| `summary` | The text on the post's card in the list (default: the start of the post) |
+| `author` | `{name, url}`, signed at the end of the post, linked when `url` is set. A plain string is a name without a link |
+
+To show the latest posts on your home page, call the partial from `layouts/home.html`:
+
+```go-html-template
+{{ partial "latest-news.html" (dict "count" 3) }}
+```
+
+It shows each post's date, title and first sentence, under a heading linking to `/news/`, and
+nothing when there are no posts. Every key is optional: `count` (3), `section` (`"news"`),
+`title` (`"News"`) and `more` (`"All news →"`, the link's text). For a section with another name,
+pass `section` and give the section `cascade: {type: news}` in its `_index.md`, so its pages use the
+news layouts.
+
+The list uses `.card-list` and `.link-card`, which you can use for your own card grids too.
+
 ### Params
 
 | Param | Used for |

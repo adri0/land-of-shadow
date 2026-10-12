@@ -1,0 +1,16 @@
+{{ define "main" }}
+{{- /* The news list: one card per post, newest first, with its date and summary. */ -}}
+{{ partial "breadcrumb.html" . }}
+<h1>{{ .Title }}</h1>
+{{- with .Content }}<div class="article-body">{{ . }}</div>{{ end }}
+
+<div class="card-list">
+  {{- range .Pages.ByDate.Reverse }}
+  <a class="link-card" href="{{ .RelPermalink }}">
+    <h2>{{ .Title }}</h2>
+    <div class="link-card-meta"><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 2, 2006" }}</time></div>
+    {{- with .Summary }}<p>{{ . | plainify }}</p>{{ end }}
+  </a>
+  {{- end }}
+</div>
+{{ end }}
