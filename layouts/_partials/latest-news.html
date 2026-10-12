@@ -1,0 +1,35 @@
+{{- /*
+  The newest news posts, as a block for a home page: a heading with a link to
+  the news section, then each post's date, title and first sentence. Renders
+  nothing when the section has no posts.
+
+  Takes a dict, every key optional:
+    count    how many posts (default 3)
+    section  the section's name (default "news")
+    title    the heading (default "News")
+    more     the link to the section (default "All news →")
+
+    {{ partial "latest-news.html" (dict "count" 5) }}
+*/ -}}
+{{- $count := .count | default 3 }}
+{{- $section := .section | default "news" }}
+{{- with first $count (where site.RegularPages "Section" $section).ByDate.Reverse }}
+<section>
+  <div class="section-head">
+    <h2>{{ $.title | default "News" }}</h2>
+    <a href="{{ printf "/%s/" $section | relURL }}">{{ $.more | default "All news →" }}</a>
+  </div>
+  <ul class="news-list">
+    {{- range . }}
+    {{- /* First sentence: up to the first . ! or ? followed by a space or the end. */}}
+    {{- $plain := .Plain | htmlUnescape | strings.TrimSpace }}
+    {{- $first := index (findRE `^[\s\S]+?[.!?](\s|$)` $plain 1) 0 | default $plain }}
+    <li>
+      <time class="news-date" datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "Jan 2, 2006" }}</time>
+      <a href="{{ .RelPermalink }}">{{ .Title }}</a>
+      <p>{{ strings.TrimSpace $first }}</p>
+    </li>
+    {{- end }}
+  </ul>
+</section>
+{{- end }}

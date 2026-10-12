@@ -1,0 +1,14 @@
+{{ define "main" }}
+{{ partial "breadcrumb.html" . }}
+<article>
+  <h1>{{ .Title }}</h1>
+  <p class="notice"><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time></p>
+  <div class="article-body prose-links">{{ .Content }}</div>
+  {{- /* author is {name, url}; a bare string is taken as a name without a link. */}}
+  {{- $author := .Params.author }}
+  {{- if not (reflect.IsMap $author) }}{{ $author = dict "name" $author }}{{ end }}
+  {{- with $author.name }}
+  <p class="news-signature prose-links">— <strong>{{ with $author.url }}<a href="{{ . }}">{{ $author.name }}</a>{{ else }}{{ $author.name }}{{ end }}</strong></p>
+  {{- end }}
+</article>
+{{ end }}

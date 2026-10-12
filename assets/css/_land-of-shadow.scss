@@ -310,6 +310,72 @@ h1 { color: var(--accent); }
     }
 }
 
+/* --- Cards: a grid of linked cards (news/section.html; sites can reuse it) --- */
+
+.card-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin: 1.5rem 0;
+
+    @include md { grid-template-columns: 1fr 1fr; }
+}
+
+.link-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 1.25rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-container);
+    color: var(--text-main);
+    transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+
+    h2 { margin: 0; font-size: 1.35rem; }
+    p { color: var(--text-muted); font-size: 0.9rem; }
+
+    &:hover {
+        border-color: var(--accent);
+        transform: translateY(-2px);
+        box-shadow: 0 0 0 1px var(--gold-soft), 0 6px 24px -8px var(--gold-glow);
+        color: var(--text-main);
+    }
+}
+
+.link-card-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    flex-wrap: wrap;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+/* --- News: _partials/latest-news.html and news/page.html --- */
+
+.news-list {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+
+    a { font-weight: 600; }
+    p { margin-top: 0.25rem; color: var(--text-muted); font-size: 0.9rem; }
+}
+
+.news-date {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.news-signature {
+    margin-top: 1.5rem;
+    text-align: right;
+}
+
 /* --- Table of contents (page.html; sites can reuse it) ---
    A sticky box to the right of the page on wide screens; hidden below that,
    where there's no room beside the tables and bracket. */
