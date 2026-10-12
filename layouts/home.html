@@ -1,0 +1,43 @@
+{{ define "main" }}
+{{- /*
+  The default home page: a hero (params.logo and params.wordmark, or the site
+  title, then params.subtitle and the home page's content), the latest news
+  and a card for each other section. A site replaces it with its own
+  layouts/home.html, and can reuse the hero classes and the latest-news.html
+  partial there.
+*/ -}}
+{{ partial "edit-link.html" . }}
+<section class="hero">
+  <h1 class="hero-title">
+    {{- with site.Params.logo }}{{ $logo := (resources.Get .).Resize "280x png" }}
+    <img class="hero-logo" src="{{ $logo.RelPermalink }}" width="140" height="140" alt="">
+    {{- end }}
+    {{- with site.Params.wordmark }}{{ $wordmark := (resources.Get .).Resize "x280 png" }}
+    <img class="hero-wordmark brand-wordmark" src="{{ $wordmark.RelPermalink }}" width="{{ div $wordmark.Width 2 }}" height="140" alt="{{ site.Params.wordmarkAlt | default site.Title }}">
+    {{- else }}
+    <span>{{ site.Title }}</span>
+    {{- end }}
+  </h1>
+  {{- with site.Params.subtitle }}<p class="hero-subtitle">{{ . }}</p>{{ end }}
+  <div class="ornament" aria-hidden="true"><span></span></div>
+  {{- with .Content }}<div class="article-body hero-body">{{ . }}</div>{{ end }}
+</section>
+
+{{ partial "latest-news.html" (dict) }}
+
+{{- with where site.Sections "Section" "ne" "news" }}
+<section>
+  <div class="section-head">
+    <h2>Explore</h2>
+  </div>
+  <div class="card-list">
+    {{- range . }}
+    <a class="link-card" href="{{ .RelPermalink }}">
+      <h2>{{ .Title }}</h2>
+      {{- with .Description | default .Summary }}<p>{{ . | plainify }}</p>{{ end }}
+    </a>
+    {{- end }}
+  </div>
+</section>
+{{- end }}
+{{ end }}

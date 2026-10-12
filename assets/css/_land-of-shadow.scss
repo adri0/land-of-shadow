@@ -310,6 +310,59 @@ h1 { color: var(--accent); }
     }
 }
 
+/* --- Home hero (home.html; sites can reuse it in their own) --- */
+
+.hero {
+    padding: 1rem 0 0.5rem;
+    text-align: center;
+}
+
+.hero-title {
+    margin: 0.5rem 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: 0.03em;
+
+    @include md { gap: 1.5rem; }
+}
+
+/* Logo and wordmark share a height; widths follow from their aspect ratios. */
+.hero-logo,
+.hero-wordmark {
+    width: auto;
+    height: 96px;
+    margin: 0;
+
+    @include md { height: 140px; }
+}
+
+[data-theme="dark"] .hero-logo,
+[data-theme="dark"] .hero-wordmark { filter: drop-shadow(0 0 22px var(--gold-glow)); }
+
+.hero-subtitle {
+    margin-top: 1rem;
+    color: var(--accent);
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+
+    @include md { font-size: 1.15rem; }
+}
+
+.hero-body {
+    margin: 1rem auto 0;
+    max-width: 60ch;
+    color: var(--text-muted);
+    font-size: 1.15rem;
+    font-style: italic;
+}
+
 /* --- Cards: a grid of linked cards (news/section.html; sites can reuse it) --- */
 
 .card-list {
