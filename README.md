@@ -4,9 +4,10 @@ A dark, Elden Ring–flavoured Hugo theme: ash-black and Erdtree gold by default
 in light mode, set in Cinzel and EB Garamond. It is the look of
 [scadustats.com](https://scadustats.com/) ([source](https://github.com/adri0/scadustats-site)).
 
-![The scadustats.com home page in Land of Shadow's dark mode: the header, the hero, the latest news and the sidebar's stat widgets](images/screenshot-home-dark.png)
+![The scadustats.com home page in Land of Shadow's dark mode: the header, the hero, the latest news and the sidebar's stat widgets](https://raw.githubusercontent.com/adri0/land-of-shadow/main/images/screenshot-home-dark.png)
 
-It started from the [kopi](https://github.com/bect/kopi) theme (MIT). Only the parts in use were
+It started from the [kopi](https://github.com/bect/kopi) theme (MIT) (see
+[How it differs from kopi](#how-it-differs-from-kopi)). Only the parts in use were
 kept (`assets/css/kopi/`, `assets/js/kopi/`, `layouts/404.html`, `static/favicon.ico`; see
 `LICENSES/kopi.txt`), and kopi's search, radio player, bookmarks, PWA, cookie banner, taxonomy pages
 and Markdown render hooks were left out. Page navigation uses [Hotwire Turbo](https://turbo.hotwired.dev/)
@@ -30,8 +31,16 @@ hugo mod get github.com/adri0/land-of-shadow@latest
 ```
 
 The theme gives you `baseof.html`, `page.html` (with a table of contents built from the `##`
-headings), `section.html`, `404.html` and the head, header, footer and breadcrumb partials. It
-doesn't have a home page layout: add your own `layouts/home.html`.
+headings), `section.html`, `404.html`, a home page and the head, header, footer and breadcrumb
+partials.
+
+### Home page
+
+The theme's `home.html` shows a hero (`logo` and `wordmark`, or the site title, then `subtitle` and
+the text of `content/_index.md`), the latest news, and a card for each other section with its
+`description` or summary. For your own home page, add `layouts/home.html` to your site: the hero
+classes (`.hero`, `.hero-title`, `.hero-logo`, `.hero-wordmark`, `.hero-subtitle`, `.hero-body`) and
+the `latest-news.html` partial are there to reuse.
 
 ### News
 
@@ -96,6 +105,25 @@ kopi's tokens (`--bg-body`, `--bg-card`, `--text-main`, `--text-muted`, `--accen
 
 The site is dark by default: the inline script in `head.html` only switches to light when the
 visitor picked it with the toggle (`localStorage.theme`), and it ignores the OS colour scheme.
+
+## How it differs from kopi
+
+kopi is a blog and magazine theme with a dark mode, a two-column layout and Turbo page
+transitions. Land of Shadow keeps its layout grid, base components, dark-mode toggle and Turbo, and
+turns it from a blog into a site of reference pages:
+
+- **Its own look:** a new palette (ash-black and Erdtree gold, parchment and umber in light mode),
+  Cinzel and EB Garamond in place of kopi's system sans-serif, gold ornaments, gradient rules and
+  card glows. It's dark by default, whatever the OS setting.
+- **Pages as well as posts:** the page layout has a sticky table of contents built from the `##`
+  headings, "[edit this page]" links to the source on GitHub, and a full-width banner block under
+  the header. Tables and headings are styled for data pages.
+- **A news section** with a card list, signed posts, an archetype and a latest-news block for the
+  home page. The home page has a hero with logo and wordmark.
+- **Extension points:** hook partials for `<head>`, the header buttons and the footer, and a site
+  stylesheet and script that the theme loads last.
+- **Less:** kopi's search, radio player, bookmarks, PWA, cookie banner, taxonomy pages, share
+  buttons and Markdown render hooks are gone.
 
 ## Working on it with a site
 
