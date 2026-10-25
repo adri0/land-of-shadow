@@ -4,8 +4,9 @@
   it for the "link copied" toast.
 
   The left column is site.Title, then _partials/hooks/footer-about.html (by
-  default, params.description). The links are the "footer" menu, plus GitHub
-  when params.repo is set. params.disclaimer, if any, goes underneath.
+  default, params.description). The links are the "footer" menu (an entry's
+  `pre`, such as an inline SVG icon, goes before its name), plus GitHub when
+  params.repo is set. params.disclaimer, if any, goes underneath.
 */ -}}
 <div id="toastContainer" class="toast-container"></div>
 
@@ -17,7 +18,7 @@
         </div>
         <div class="footer-links">
             {{- range site.Menus.footer }}
-            <a href="{{ if .Page }}{{ .Page.RelPermalink }}{{ else }}{{ .URL }}{{ end }}">{{ .Name }}</a>
+            <a href="{{ if .Page }}{{ .Page.RelPermalink }}{{ else }}{{ .URL }}{{ end }}">{{ .Pre }}{{ .Name }}</a>
             {{- end }}
             {{- with site.Params.repo }}
             <a class="footer-github" href="{{ . }}">{{ partial "icon-github.html" "" }}GitHub</a>

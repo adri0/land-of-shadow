@@ -81,7 +81,8 @@ The list uses `.card-list` and `.link-card`, which you can use for your own card
 | `disclaimer` | A line at the bottom of the footer |
 | `htmlAttributes` | A table of extra attributes for `<html>` |
 
-Menus: `main` is the header navigation, `footer` the footer links.
+Menus: `main` is the header navigation, `footer` the footer links. A footer entry's `pre` goes
+before its name, e.g. an inline SVG icon, sized like the GitHub one.
 
 ### Extending it
 

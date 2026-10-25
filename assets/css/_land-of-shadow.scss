@@ -546,7 +546,7 @@ h1 { color: var(--accent); }
 
 /* The icon stays inline, so the link's text shares the other links' baseline;
    vertical-align lowers the mark onto the text's optical centre. */
-.footer-github .icon-github {
+.footer-links a svg {
     width: 1em;
     height: 1em;
     margin-right: 0.35em;
