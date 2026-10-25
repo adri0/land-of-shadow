@@ -1,0 +1,250 @@
+/*
+ * The calendar (layouts/_partials/calendar.html): a header line with the
+ * month nav and the legend, then one section per month, each a Monday-first
+ * grid (`.calendar-grid`) and the same days as a list (`.calendar-list`). The
+ * grid shows from tablet width up, the list below it.
+ *
+ * Events are `.calendar-event.calendar-event-<kind>`, marked by a left rule in
+ * `--calendar-event-color` (default: the accent). Give a kind its own colour by
+ * setting the property on it, e.g.
+ *   .calendar-event-final { --calendar-event-color: #e8913a; }
+ * Spans are `.calendar-span` bars in `--calendar-span` (default: soft gold).
+ */
+:root {
+    --calendar-event-color: var(--accent);
+    --calendar-span: var(--gold-soft);
+}
+
+/* One line: the month nav (‹ selector ›) on the left, standing in for the
+   month's title, and the legend right-aligned. They wrap onto two lines when
+   there's no room. */
+.calendar-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.5rem;
+    margin: 1rem 0 1.25rem;
+}
+
+.calendar-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    &[hidden] { display: none; }
+
+    button {
+        cursor: pointer;
+        font-size: 1.1rem;
+        line-height: 1;
+        padding: 0.35rem 0.75rem;
+
+        &:disabled {
+            opacity: 0.35;
+            cursor: default;
+        }
+    }
+}
+
+/* The month selector, set like a heading. */
+.calendar-month-select {
+    padding: 0.1rem 0.4rem;
+    background: transparent;
+    color: var(--text-main);
+    border: 1px solid transparent;
+    border-radius: var(--radius-element);
+    cursor: pointer;
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    font-weight: 600;
+
+    &:hover,
+    &:focus-visible { border-color: var(--border); }
+
+    option {
+        background: var(--bg-card);
+        font-family: var(--font-body);
+        font-size: 1rem;
+    }
+}
+
+.calendar-legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.25rem;
+    margin: 0 0 0 auto;
+    padding: 0;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    list-style: none;
+}
+
+.calendar-month {
+    margin-bottom: 2.5rem;
+
+    &[hidden] { display: none; }
+
+    .calendar-month-title { margin-bottom: 0.75rem; }
+
+    .is-paged & .calendar-month-title { display: none; }
+}
+
+table.calendar-grid {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: collapse;
+
+    th {
+        padding: 0.4rem;
+        color: var(--text-muted);
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-align: left;
+        text-transform: uppercase;
+    }
+
+    td {
+        height: 6.5rem;
+        padding: 0.35rem;
+        vertical-align: top;
+        border: 1px solid var(--border);
+        background: var(--bg-card);
+    }
+
+    td.is-blank { background: transparent; }
+
+    td.has-events { background: var(--surface); }
+
+    ul {
+        list-style: none;
+        margin: 0.25rem 0 0;
+        padding: 0;
+    }
+
+    .calendar-event {
+        overflow: hidden;
+        font-size: 0.75rem;
+        line-height: 1.3;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        margin-bottom: 0.2rem;
+    }
+
+    .calendar-event-meta { display: block; }
+}
+
+.calendar-day-number {
+    display: inline-block;
+    min-width: 1.6em;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+
+    .is-today > & {
+        border-radius: 999px;
+        background: var(--accent);
+        color: var(--bg-body);
+        font-weight: 700;
+    }
+}
+
+.calendar-event {
+    padding-left: 0.45rem;
+    border-left: 3px solid var(--calendar-event-color);
+
+    a { color: inherit; }
+    a:hover { color: var(--link); }
+}
+
+/* A span: one bar per day, run edge to edge over the cell padding and the
+   shared border so the days join into one line; rounded where it starts and
+   ends. Labelled where it starts, on Mondays and on the 1st. */
+.calendar-span {
+    display: block;
+    position: relative;
+    z-index: 1;
+    height: 1.1rem;
+    margin: 0.15rem calc(-0.35rem - 1px) 0.2rem;
+    padding: 0 0.4rem;
+    overflow: hidden;
+    background: var(--calendar-span);
+    color: var(--text-main);
+    font-size: 0.7rem;
+    font-weight: 600;
+    line-height: 1.1rem;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    &.is-start {
+        margin-left: 0;
+        border-top-left-radius: 999px;
+        border-bottom-left-radius: 999px;
+    }
+
+    &.is-end {
+        margin-right: 0;
+        border-top-right-radius: 999px;
+        border-bottom-right-radius: 999px;
+    }
+
+    a#{&}:hover { color: var(--link); }
+}
+
+.calendar-legend-span .calendar-span {
+    display: inline-block;
+    margin: 0;
+    padding: 0 0.6rem;
+}
+
+.calendar-event-meta {
+    color: var(--text-muted);
+    font-size: 0.85em;
+
+    > * + * { margin-left: 0.5rem; }
+}
+
+.calendar-list {
+    display: none;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+
+    > li {
+        display: grid;
+        grid-template-columns: 6.5rem 1fr;
+        gap: 0.75rem;
+        padding: 0.6rem 0;
+        border-bottom: 1px solid var(--border);
+    }
+
+    > li > time {
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        font-variant-numeric: tabular-nums;
+    }
+
+    > li.is-today > time { color: var(--accent); font-weight: 700; }
+
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .calendar-event {
+        margin-bottom: 0.4rem;
+
+        .pill { margin-left: 0.5rem; }
+    }
+}
+
+@media (max-width: 767px) {
+    .calendar-month .table-wrap { display: none; }
+    .calendar-list { display: block; }
+
+    .calendar-list > li { grid-template-columns: 1fr; gap: 0.3rem; }
+}

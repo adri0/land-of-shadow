@@ -1,0 +1,153 @@
+{{- /*
+  A calendar, one month at a time: a header line with the month selector
+  (‹ month ›, standing in for the month's title) and the legend, then one
+  section per month with events, newest first, each a Monday-first grid and
+  the same days as a list (the list at phone width). Spans (e.g. a season or
+  an event week) are drawn as a bar across their days in the grid. Without
+  JavaScript every month shows, titled. One per page: the month sections have
+  ids, and assets/js/modules/calendar.js wires up the nav.
+
+  Takes a dict:
+    events   a slice of dicts, each with date ("YYYY-MM-DD"), kind (the
+             event gets the class calendar-event-<kind>), title and url, and
+             optionally time ("HH:MM", UTC: shown in the visitor's time zone)
+             and list_only (true: only in the list, not the grid, e.g. a
+             span's start and end, which the bar already shows). Any other
+             keys are passed through to calendar-event.html.
+    spans    optional, a slice of dicts {title, url, start, end} ("YYYY-MM-DD"),
+             each a bar across its days in the grid
+    legend   optional, a slice of dicts {label, kind}: an event's sample for
+             that kind, or with kind "span" a bar's
+    heading  optional, the tag of each month's title (default "h2"; pass "h3"
+             under a section heading)
+
+    {{ partial "calendar.html" (dict "events" $events "spans" $spans) }}
+
+  Each event is rendered by calendar-event.html with {event, full}: full is
+  true in the list and false in a grid cell. Override that partial in your
+  site to change how an event looks.
+*/ -}}
+{{- $heading := .heading | default "h2" -}}
+{{- $spans := sort (.spans | default slice) "start" -}}
+<div class="calendar">
+    {{- /* Events by day, and the months that have any or that a span
+           covers, newest first. */}}
+    {{- $byDate := dict }}
+    {{- $months := slice }}
+    {{- range .events }}
+      {{- $byDate = merge $byDate (dict .date ((index $byDate .date | default slice) | append .)) }}
+      {{- $months = $months | append (substr .date 0 7) }}
+    {{- end }}
+    {{- range $spans }}
+      {{- $m := time.AsTime (printf "%s-01" (substr .start 0 7)) }}
+      {{- $last := substr .end 0 7 }}
+      {{- range seq 120 }}
+        {{- if gt ($m.Format "2006-01") $last }}{{ break }}{{ end }}
+        {{- $months = $months | append ($m.Format "2006-01") }}
+        {{- $m = $m.AddDate 0 1 0 }}
+      {{- end }}
+    {{- end }}
+    {{- $months = sort (uniq $months) "value" "desc" }}
+
+    {{- /* The nav is hidden until calendar.js wires it up, which then hides the
+           months' own titles (.is-paged). Months are listed newest first, so
+           "previous" steps down the list. */}}
+    <div class="calendar-head">
+      <nav class="calendar-nav" data-calendar=".calendar-month" aria-label="Month" hidden>
+        <button type="button" class="pill pill-outline" data-calendar-step="1" aria-label="Previous month">‹</button>
+        <select class="calendar-month-select" aria-label="Month">
+          {{- range $months }}
+          <option value="{{ . }}">{{ (time.AsTime (printf "%s-01" .)).Format "January 2006" }}</option>
+          {{- end }}
+        </select>
+        <button type="button" class="pill pill-outline" data-calendar-step="-1" aria-label="Next month">›</button>
+      </nav>
+
+      {{- with .legend }}
+      <ul class="calendar-legend">
+        {{- range . }}
+          {{- if eq .kind "span" }}
+        <li class="calendar-legend-span"><span class="calendar-span is-start is-end">{{ .label }}</span></li>
+          {{- else }}
+        <li class="calendar-event calendar-event-{{ .kind }}">{{ .label }}</li>
+          {{- end }}
+        {{- end }}
+      </ul>
+      {{- end }}
+    </div>
+
+    {{- range $month := $months }}
+      {{- $first := time.AsTime (printf "%s-01" $month) }}
+      {{- $days := ($first.AddDate 0 1 -1).Day }}
+      {{- /* Weeks start on Monday. */}}
+      {{- $offset := mod (add (int $first.Weekday) 6) 7 }}
+      {{- $weeks := div (add (add $offset $days) 6) 7 }}
+    <section class="calendar-month" id="month-{{ $month }}" data-month="{{ $month }}">
+      {{ printf "<%s class=\"calendar-month-title\">%s</%s>" $heading ($first.Format "January 2006") $heading | safeHTML }}
+      <div class="table-wrap">
+        <table class="calendar-grid">
+          <thead>
+            <tr>{{ range slice "Mon" "Tue" "Wed" "Thu" "Fri" "Sat" "Sun" }}<th scope="col">{{ . }}</th>{{ end }}</tr>
+          </thead>
+          <tbody>
+            {{- range $w := seq 0 (sub $weeks 1) }}
+            <tr>
+              {{- range $c := seq 0 6 }}
+                {{- $d := add (sub (add (mul $w 7) $c) $offset) 1 }}
+                {{- if and (ge $d 1) (le $d $days) }}
+                  {{- $date := printf "%s-%02d" $month $d }}
+                  {{- $dayEvents := where (index $byDate $date | default slice) "list_only" "!=" true }}
+              <td class="calendar-day{{ if $dayEvents }} has-events{{ end }}" data-date="{{ $date }}">
+                <span class="calendar-day-number">{{ $d }}</span>
+                {{- range $s := $spans }}
+                  {{- if and (le $s.start $date) (ge $s.end $date) }}
+                    {{- $class := "calendar-span" }}
+                    {{- if eq $s.start $date }}{{ $class = printf "%s is-start" $class }}{{ end }}
+                    {{- if eq $s.end $date }}{{ $class = printf "%s is-end" $class }}{{ end }}
+                    {{- /* Named where it starts, on Mondays and on the 1st. */}}
+                    {{- if or (eq $s.start $date) (eq $c 0) (eq $d 1) }}
+                      {{- /* "Jul 17 – Sep 19, 2026", with the start's year too when it differs. */}}
+                      {{- $from := time.AsTime $s.start }}{{ $to := time.AsTime $s.end }}
+                      {{- $tip := printf "%s: %s – %s" $s.title ($from.Format (cond (eq $from.Year $to.Year) "Jan 2" "Jan 2, 2006")) ($to.Format "Jan 2, 2006") }}
+                      {{- if $s.url }}
+                <a class="{{ $class }}" href="{{ $s.url }}" title="{{ $tip }}">{{ $s.title }}</a>
+                      {{- else }}
+                <span class="{{ $class }}" title="{{ $tip }}">{{ $s.title }}</span>
+                      {{- end }}
+                    {{- else }}
+                <span class="{{ $class }}" aria-hidden="true"></span>
+                    {{- end }}
+                  {{- end }}
+                {{- end }}
+                {{- with $dayEvents }}
+                <ul>
+                  {{- range . }}{{ partial "calendar-event.html" (dict "event" . "full" false) }}{{ end }}
+                </ul>
+                {{- end }}
+              </td>
+                {{- else }}
+              <td class="calendar-day is-blank"></td>
+                {{- end }}
+              {{- end }}
+            </tr>
+            {{- end }}
+          </tbody>
+        </table>
+      </div>
+
+      <ol class="calendar-list">
+        {{- range $d := seq $days }}
+          {{- $date := printf "%s-%02d" $month $d }}
+          {{- with index $byDate $date }}
+        <li class="calendar-list-day" data-date="{{ $date }}">
+          <time datetime="{{ $date }}">{{ (time.AsTime $date).Format "Mon Jan 2" }}</time>
+          <ul>
+            {{- range . }}{{ partial "calendar-event.html" (dict "event" . "full" true) }}{{ end }}
+          </ul>
+        </li>
+          {{- end }}
+        {{- end }}
+      </ol>
+    </section>
+    {{- end }}
+</div>
