@@ -68,6 +68,32 @@ news layouts.
 
 The list uses `.card-list` and `.link-card`, which you can use for your own card grids too.
 
+### Calendar
+
+The `calendar.html` partial draws a calendar from events you give it, one month at a time: a
+month selector (‹ month ›) with the legend on the same line, then the month as a Monday-first grid,
+or as a list at phone width. Only months with events, or that a span covers, are listed. It opens on the next month with
+events from today on, else the latest one, and `?month=YYYY-MM` links to a month. Without
+JavaScript every month shows. Use one per page.
+
+```go-html-template
+{{ partial "calendar.html" (dict "events" $events "spans" $spans "legend" $legend) }}
+```
+
+| Key | |
+|---|---|
+| `events` | Dicts with `date` (`"YYYY-MM-DD"`), `kind`, `title` and `url`. Optional: `time` (`"HH:MM"`, UTC, shown in the visitor's time zone) and `list_only` (left out of the grid, e.g. a span's start and end). Other keys are passed through to `calendar-event.html` |
+| `spans` | Optional. Dicts `{title, url, start, end}`, each drawn as a bar across its days in the grid, e.g. a season |
+| `legend` | Optional. Dicts `{label, kind}`: a sample of that kind of event, or with `kind: span` a bar |
+| `heading` | Optional. The tag of each month's title (`"h2"`; pass `"h3"` under a section heading) |
+
+Each event is drawn by `calendar-event.html` as `<li class="calendar-event calendar-event-<kind>">`
+with its title, linked, and its time. Override that partial in your site to show more; it gets
+`{event, full}`, where `full` is false in a grid cell and true in the list. Events are marked in
+`--calendar-event-color` (default `--accent`), which you can set per kind in your styles, e.g.
+`.calendar-event-final { --calendar-event-color: #e8913a; }`. Spans use `--calendar-span`
+(default `--gold-soft`).
+
 ### Params
 
 | Param | Used for |
@@ -121,6 +147,7 @@ turns it from a blog into a site of reference pages:
   the header. Tables and headings are styled for data pages.
 - **A news section** with a card list, signed posts, an archetype and a latest-news block for the
   home page. The home page has a hero with logo and wordmark.
+- **A calendar** partial: month grid and list, a month selector, spans drawn as bars.
 - **Extension points:** hook partials for `<head>`, the header buttons and the footer, and a site
   stylesheet and script that the theme loads last.
 - **Less:** kopi's search, radio player, bookmarks, PWA, cookie banner, taxonomy pages, share

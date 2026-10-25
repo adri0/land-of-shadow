@@ -10,6 +10,7 @@
  * every Turbo page load, after the theme's modules.
  */
 import { initNavigation } from './kopi/navigation.js';
+import { initCalendar } from './modules/calendar.js';
 import { initTheme } from './modules/theme.js';
 import { initInteractions } from './kopi/interactions.js';
 import { initPrefetch } from './kopi/prefetch.js';
@@ -21,5 +22,6 @@ document.addEventListener('turbo:load', () => {
     initTheme();
     initInteractions();
     initPrefetch();
+    initCalendar();
     initSite();
 });

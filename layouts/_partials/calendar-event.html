@@ -1,0 +1,17 @@
+{{- /*
+  One event of calendar.html, as a <li class="calendar-event
+  calendar-event-<kind>">: its title, linked when it has a url, and its time
+  if any. Takes a dict {event, full}: full is true in the month's list, false
+  in a grid cell (where space is short). A time is UTC ("HH:MM");
+  calendar.js rewrites it in the visitor's time zone.
+
+  Override this partial in your site to show more (avatars, labels…); keep
+  the <li> and its classes.
+*/ -}}
+{{- $e := .event -}}
+<li class="calendar-event calendar-event-{{ $e.kind }}">
+  {{- with $e.url }}<a href="{{ . }}">{{ $e.title }}</a>{{ else }}<span>{{ $e.title }}</span>{{ end -}}
+  {{- with $e.time -}}
+    <span class="calendar-event-meta"><time class="calendar-time" datetime="{{ $e.date }}T{{ . }}Z">{{ . }} UTC</time></span>
+  {{- end -}}
+</li>
