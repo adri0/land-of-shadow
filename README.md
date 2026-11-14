@@ -4,12 +4,12 @@ A dark, Elden Ring–flavoured Hugo theme: ash-black and Erdtree gold by default
 in light mode, set in Cinzel and EB Garamond. It is the look of
 [scadustats.com](https://scadustats.com/) ([source](https://github.com/adri0/scadustats-site)).
 
-![The scadustats.com home page in Land of Shadow's dark mode: the header, the hero, the latest news and the sidebar's stat widgets](https://raw.githubusercontent.com/adri0/land-of-shadow/main/images/screenshot-home-dark.png)
+![The scadustats.com home page in Land of Shadow: the header, the title with the site's logos, upcoming matches, the calendar and the seasons list](https://raw.githubusercontent.com/adri0/land-of-shadow/main/images/screenshot-home-dark.png)
 
 It started from the [kopi](https://github.com/bect/kopi) theme (MIT) (see
-[How it differs from kopi](#how-it-differs-from-kopi)). Only the parts in use were
-kept (`assets/css/kopi/`, `assets/js/kopi/`, `layouts/404.html`, `static/favicon.ico`; see
-`LICENSES/kopi.txt`), and kopi's search, radio player, bookmarks, PWA, cookie banner, taxonomy pages
+[How it differs from kopi](#how-it-differs-from-kopi)). Its styles have since been rewritten; what's
+left of kopi is `assets/js/kopi/`, the structure of some layouts (`layouts/404.html`, the header,
+footer and page) and `static/favicon.ico` (see `LICENSES/kopi.txt`). kopi's search, radio player, bookmarks, PWA, cookie banner, taxonomy pages
 and Markdown render hooks were left out. Page navigation uses [Hotwire Turbo](https://turbo.hotwired.dev/)
 8.0.20 (MIT, © 37signals), in `assets/js/third_party/` unmodified from its npm release. (Not `vendor/`: Go module
 zips, which Hugo downloads modules as, leave out any directory named `vendor`.)
@@ -31,7 +31,7 @@ hugo mod get github.com/adri0/land-of-shadow@latest
 ```
 
 The theme gives you `baseof.html`, `page.html` (with a table of contents built from the `##`
-headings), `section.html`, `404.html`, a home page and the head, header, footer and breadcrumb
+headings, in a box beside the text on wide screens), `section.html`, `404.html`, a home page and the head, header, footer and breadcrumb
 partials.
 
 ### Home page
@@ -46,7 +46,9 @@ the `latest-news.html` partial are there to reuse.
 
 Put posts in `content/news/` (with a `_index.md` for the section's title) and the theme lists them,
 newest first, at `/news/`. `hugo new content news/2026-10-11-my-post.md` starts a post from the
-theme's archetype, which takes the title from the file name without the date. Front matter:
+theme's archetype, which takes the title from the file name without the date. A post gets the same
+table of contents as a page, from its top heading level (`##`, or `###` when it has no `##`). Front
+matter:
 
 | Field | Used for |
 |---|---|
@@ -66,7 +68,8 @@ nothing when there are no posts. Every key is optional: `count` (3), `section` (
 pass `section` and give the section `cascade: {type: news}` in its `_index.md`, so its pages use the
 news layouts.
 
-The list uses `.card-list` and `.link-card`, which you can use for your own card grids too.
+The list uses `.card-list` and `.link-card` (rows with a title, a date line and a summary), which
+you can use for your own lists too.
 
 ### Calendar
 
@@ -106,6 +109,7 @@ with its title, linked, and its time. Override that partial in your site to show
 | `repo` | A GitHub repo URL: the footer's GitHub link and the "[edit this page]" links (to its `main` branch) |
 | `disclaimer` | A line at the bottom of the footer |
 | `htmlAttributes` | A table of extra attributes for `<html>` |
+| `colorScheme` | `"dark"` or `"light"`: always that mode, with no light/dark toggle in the header |
 
 Menus: `main` is the header navigation, `footer` the footer links. A footer entry's `pre` goes
 before its name, e.g. an inline SVG icon, sized like the GitHub one.
@@ -115,34 +119,47 @@ before its name, e.g. an inline SVG icon, sized like the GitHub one.
 Put a file at the same path in your site to fill in these, which the theme leaves empty:
 
 - `layouts/_partials/hooks/head-end.html`: tags at the end of `<head>` (analytics, early scripts).
-- `layouts/_partials/hooks/header-actions.html`: header buttons before the dark-mode toggle.
+- `layouts/_partials/hooks/header-actions.html`: header buttons, before the light/dark toggle if
+  there is one.
 - `layouts/_partials/hooks/footer-about.html`: the footer's text under the site title.
 - `layouts/_partials/sidebar.html`: the 404 page's sidebar.
-- `assets/css/_site.scss`: your styles, imported after the theme's. kopi's mixins (`@include md`)
-  and the tokens below are available.
+- `assets/css/_site.scss`: your styles, imported after the theme's. The tokens below and the
+  mixins in `_tokens.scss` are available: `md` (768px and up), `gold-rule` (a gold hairline
+  fading out to the right, as under section headings) and `label` (Cinzel small capitals).
 - `assets/js/site.js`: export an `initSite()` function, which runs on every Turbo page load after
   the theme's modules.
 
 ### Tokens
 
-kopi's tokens (`--bg-body`, `--bg-card`, `--text-main`, `--text-muted`, `--accent`, `--border`,
-`--radius-*`) are re-pointed at the palette in `assets/css/_land-of-shadow.scss`. It adds
-`--surface`/`--surface-strong`, `--gold-soft`/`--gold-glow`, `--link`, `--font-display` and
-`--font-body`. Each has a light value and a `[data-theme="dark"]` one.
+Everything the theme draws with is a custom property in `assets/css/_tokens.scss`:
+
+- Colour: `--bg`, `--bg-raised`, `--fg`, `--fg-muted`, `--fg-faint`, `--rule`, `--rule-strong`,
+  `--tint`, `--tint-strong`, `--accent` (Erdtree gold), `--accent-tint`, `--accent-glow`, `--link`,
+  `--focus`. Dark values on `:root`, light ones under `[data-theme="light"]`.
+- Type: `--font-display` (Cinzel), `--font-body` (EB Garamond), `--font-mono`, the sizes
+  `--fs-xs` … `--fs-2xl`, `--lh-tight`, `--lh-base`, `--tracking-display`, `--tracking-label`.
+- Space: the scale `--sp-1` … `--sp-9` (4px-based) and the rhythms built on it:
+  `--space-section`, `--space-block`, `--space-stack`, `--row-pad`.
+- Frame: `--radius`, `--measure`, `--max-width`, `--header-height`.
+
+The kopi-era names (`--bg-body`, `--text-main`, `--surface`, `--gold-soft`…) still work as
+aliases, so older site styles keep working.
 
 The site is dark by default: the inline script in `head.html` only switches to light when the
 visitor picked it with the toggle (`localStorage.theme`), and it ignores the OS colour scheme.
+Set `colorScheme` to keep one mode and hide the toggle.
 
 ## How it differs from kopi
 
 kopi is a blog and magazine theme with a dark mode, a two-column layout and Turbo page
-transitions. Land of Shadow keeps its layout grid, base components, dark-mode toggle and Turbo, and
-turns it from a blog into a site of reference pages:
+transitions. Land of Shadow keeps its light/dark toggle, phone menu and Turbo, and turns it from a blog
+into a site of reference pages:
 
-- **Its own look:** a new palette (ash-black and Erdtree gold, parchment and umber in light mode),
-  Cinzel and EB Garamond in place of kopi's system sans-serif, gold ornaments, gradient rules and
-  card glows. It's dark by default, whatever the OS setting.
-- **Pages as well as posts:** the page layout has a sticky table of contents built from the `##`
+- **Its own look:** its own styles on one set of design tokens, sober and spacious: a palette of
+  ash-black and Erdtree gold (parchment and umber in light mode), Cinzel and EB Garamond in place
+  of kopi's system sans-serif, Cinzel small-capital labels and gold hairlines rather than frames
+  and cards. It's dark by default, whatever the OS setting, or one mode only with `colorScheme`.
+- **Pages as well as posts:** pages and news posts have a sticky table of contents built from their
   headings, "[edit this page]" links to the source on GitHub, and a full-width banner block under
   the header. Tables and headings are styled for data pages.
 - **A news section** with a card list, signed posts, an archetype and a latest-news block for the

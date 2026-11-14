@@ -50,8 +50,16 @@
 {{- $js := resources.Get "js/main.js" | js.Build (dict "minify" true) | fingerprint }}
 <script type="module" src="{{ $js.RelPermalink }}"></script>
 
-{{- /* Dark unless the visitor chose light with the toggle; the OS colour
-  scheme is deliberately ignored (see assets/js/modules/theme.js). */}}
+{{- /* params.colorScheme ("dark" or "light") fixes the mode and drops the toggle,
+  clearing a choice saved before. Without it: dark unless the visitor chose light
+  with the toggle; the OS colour scheme is deliberately ignored (see
+  assets/js/modules/theme.js). */}}
+{{- with site.Params.colorScheme }}
+<script>
+    document.documentElement.setAttribute('data-theme', {{ . }});
+    try { localStorage.removeItem('theme'); } catch (e) {}
+</script>
+{{- else }}
 <script>
     (function() {
         let theme = 'dark';
@@ -59,5 +67,6 @@
         document.documentElement.setAttribute('data-theme', theme);
     })();
 </script>
+{{- end }}
 
 {{ partial "hooks/head-end.html" . }}

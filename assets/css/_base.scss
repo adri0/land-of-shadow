@@ -1,0 +1,166 @@
+/* --- Base: reset, type, links, running text ------------------------------- */
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    overflow-x: hidden;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-body);
+    font-size: var(--fs-base);
+    line-height: var(--lh-base);
+    font-variant-numeric: lining-nums;
+    -webkit-font-smoothing: antialiased;
+    overflow-wrap: break-word;
+}
+
+/* Headings in Cinzel, the page title in gold. */
+h1, h2, h3, h4 {
+    color: var(--fg);
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: var(--lh-tight);
+    letter-spacing: var(--tracking-display);
+}
+
+h1 { color: var(--accent); font-size: var(--fs-xl); }
+h2 { font-size: var(--fs-lg); }
+h3 { font-size: var(--fs-md); }
+h4 { font-size: var(--fs-base); }
+
+@include md {
+    h1 { font-size: var(--fs-2xl); }
+}
+
+a {
+    color: var(--fg);
+    text-decoration: none;
+}
+
+a:hover { color: var(--accent); }
+
+:focus-visible {
+    outline: 2px solid var(--focus);
+    outline-offset: 2px;
+}
+
+::selection { background-color: var(--accent-tint); }
+
+input, button, textarea, select { font: inherit; color: inherit; }
+
+img, svg, video, iframe { max-width: 100%; height: auto; }
+img { display: block; }
+
+code, kbd, pre { font-family: var(--font-mono); font-size: 0.9em; }
+
+pre {
+    overflow-x: auto;
+    max-width: 100%;
+    padding: var(--sp-3) var(--sp-4);
+    border: 1px solid var(--rule);
+    background: var(--tint);
+}
+
+hr {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: var(--space-block) 0;
+}
+
+/* Tables scroll inside a .table-wrap, not by themselves. */
+table { border-collapse: collapse; }
+
+/* Data pages are headings, tables and lists, so they get a vertical rhythm of
+   their own: a section's heading stands well clear of what came before.
+   :where() keeps it at zero specificity, so components win. */
+:where(.main-wrapper) {
+    h1 { margin-bottom: var(--space-stack); }
+    h2 { margin: var(--space-section) 0 var(--space-stack); }
+    h3 { margin: var(--space-block) 0 var(--sp-3); }
+    p { margin-bottom: var(--space-stack); }
+}
+
+/* --- Running text (content pages, news posts) --- */
+
+.article-body {
+    max-width: var(--measure);
+    font-size: var(--fs-md);
+    line-height: 1.7;
+
+    h2 { margin: var(--sp-7) 0 var(--space-stack); font-size: var(--fs-lg); }
+    h3 { margin: var(--space-block) 0 var(--sp-3); font-size: var(--fs-md); }
+    p, ul, ol, blockquote, figure { margin-bottom: var(--sp-5); }
+    ul, ol { padding-left: var(--sp-5); }
+    li { margin-bottom: var(--sp-2); }
+
+    code {
+        padding: 0.1em 0.3em;
+        background: var(--tint);
+        border-radius: var(--radius);
+    }
+
+    pre code { padding: 0; background: none; }
+
+    blockquote {
+        padding-left: var(--sp-4);
+        border-left: 1px solid var(--accent);
+        color: var(--fg-muted);
+        font-style: italic;
+    }
+
+    table {
+        width: 100%;
+        margin: var(--space-block) 0;
+        font-size: var(--fs-sm);
+
+        th, td {
+            padding: var(--row-pad) var(--sp-3);
+            text-align: left;
+            border-bottom: 1px solid var(--rule);
+        }
+
+        th {
+            color: var(--fg-muted);
+            font-family: var(--font-display);
+            font-size: var(--fs-xs);
+            font-weight: 600;
+            letter-spacing: var(--tracking-label);
+            border-bottom-color: var(--rule-strong);
+        }
+    }
+
+    img { max-width: 100%; height: auto; }
+}
+
+/* Links in running text: a brighter, warmer gold than --accent (which sits
+   too close to the ink to read as a link), underlined. Links elsewhere
+   (tables, lists, navigation) stay ink-coloured and show the accent on hover. */
+.article-body a,
+.prose-links a {
+    color: var(--link);
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.18em;
+
+    &:hover { text-decoration-thickness: 2px; }
+}
+
+.notice {
+    color: var(--fg-muted);
+    font-size: var(--fs-sm);
+}
