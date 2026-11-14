@@ -1,0 +1,134 @@
+/* --- Design tokens -----------------------------------------------------------
+   Everything the theme draws with: the palette, the two typefaces and their
+   scale, a spacing scale and the rule weights.
+
+   Dark is the default: ash-black and Erdtree gold. The header toggle switches
+   to light, parchment and umber (baseof.html starts <html> dark, and
+   _partials/head.html applies a saved choice before first paint). Type is
+   Cinzel for headings and small-caps labels, EB Garamond for everything else.
+
+   The older names further down (--bg-body, --text-main, --surface…, from the
+   kopi days) are kept as aliases so a site's own styles keep working.
+---------------------------------------------------------------------------- */
+
+:root {
+    color-scheme: dark;
+
+    /* Colour: ash-black, bone-white ink and one accent, Erdtree gold. */
+    --bg: #0c0b09;
+    --bg-raised: #13110d;
+    --fg: #e6dcc3;
+    --fg-muted: #9d927b;
+    --fg-faint: #6f6754;
+    --rule: #2f291e;
+    --rule-strong: #463d2c;
+    --tint: #12100c;         /* hovered rows, empty cells */
+    --tint-strong: #1a1712;
+    --accent: #d2ad62;
+    --accent-tint: rgba(210, 173, 98, 0.08);
+    --accent-glow: rgba(210, 173, 98, 0.22);
+    --link: #ffc94d;         /* links in running text: brighter than --accent */
+    --focus: #d2ad62;
+
+    /* Type: Cinzel (display: headings, labels) and EB Garamond (text). Garamond
+       has a small x-height, so the scale starts a little above 16px. */
+    --font-display: "Cinzel", "Trajan Pro", Georgia, serif;
+    --font-body: "EB Garamond", Garamond, Georgia, serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    --fs-xs: 0.8125rem;
+    --fs-sm: 0.9375rem;
+    --fs-base: 1.0625rem;
+    --fs-md: 1.1875rem;
+    --fs-lg: 1.4375rem;
+    --fs-xl: 1.75rem;
+    --fs-2xl: 2.25rem;
+    --lh-tight: 1.25;
+    --lh-base: 1.65;
+    --tracking-display: 0.03em;  /* Cinzel headings */
+    --tracking-label: 0.08em;    /* Cinzel small labels */
+
+    /* Space: one scale, 4px-based, and the rhythms built on it. */
+    --sp-1: 0.25rem;
+    --sp-2: 0.5rem;
+    --sp-3: 0.75rem;
+    --sp-4: 1rem;
+    --sp-5: 1.5rem;
+    --sp-6: 2rem;
+    --sp-7: 3rem;
+    --sp-8: 4rem;
+    --sp-9: 6rem;
+
+    --space-section: var(--sp-7); /* between a page's sections (sp-8 on wide screens) */
+    --space-block: var(--sp-6);   /* between blocks inside a section */
+    --space-stack: var(--sp-4);   /* between a heading and what it heads */
+    --row-pad: var(--sp-3);       /* vertical padding of table and list rows */
+
+    --radius: 2px;
+    --measure: 68ch;
+    --max-width: 1120px;
+    --header-height: 64px;
+
+    /* Aliases for the kopi-era names a site may still use. */
+    --bg-body: var(--bg);
+    --bg-card: var(--bg-raised);
+    --bg-nav: var(--bg);
+    --text-main: var(--fg);
+    --text-muted: var(--fg-muted);
+    --border: var(--rule);
+    --surface: var(--tint);
+    --surface-strong: var(--tint-strong);
+    --gold-soft: var(--accent-tint);
+    --gold-glow: var(--accent-glow);
+    --font-sans: var(--font-body);
+    --radius-container: var(--radius);
+    --radius-element: var(--radius);
+    --space-sm: var(--sp-2);
+    --space-md: var(--sp-4);
+    --space-lg: var(--sp-6);
+}
+
+@media (min-width: 768px) {
+    :root { --space-section: var(--sp-8); }
+}
+
+[data-theme="light"] {
+    color-scheme: light;
+
+    /* Parchment and umber. */
+    --bg: #f3ecdc;
+    --bg-raised: #f8f3e6;
+    --fg: #2a2318;
+    --fg-muted: #6b604c;
+    --fg-faint: #8f846d;
+    --rule: #d6c8a8;
+    --rule-strong: #bfae88;
+    --tint: #eee5cf;
+    --tint-strong: #e8ddc2;
+    --accent: #7a5a14;
+    --accent-tint: rgba(122, 90, 20, 0.08);
+    --accent-glow: rgba(176, 134, 44, 0.28);
+    --link: #a3460c;
+    --focus: #7a5a14;
+}
+
+/* Mixins */
+$breakpoint-md: 768px;
+
+@mixin md {
+    @media (min-width: $breakpoint-md) { @content; }
+}
+
+/* A gold hairline under a heading, fading out to the right: the rule under
+   section and widget headings. */
+@mixin gold-rule {
+    border-bottom: 1px solid var(--rule);
+    border-image: linear-gradient(90deg, color-mix(in srgb, var(--accent) 70%, transparent), transparent 90%) 1;
+}
+
+/* Cinzel small labels: table headings, figure captions, pills. */
+@mixin label {
+    font-family: var(--font-display);
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    letter-spacing: var(--tracking-label);
+}

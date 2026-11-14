@@ -1,0 +1,370 @@
+/* --- Layout: page frame, header, footer, breadcrumb, table of contents ----- */
+
+.container {
+    width: 100%;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--sp-4);
+
+    @include md { padding: 0 var(--sp-6); }
+}
+
+.main-wrapper {
+    flex: 1;
+    padding: var(--sp-7) 0 var(--sp-9);
+}
+
+/* Main column plus a narrow side column (home page, 404). */
+.content-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+
+    > * { min-width: 0; }
+
+    @media (min-width: 960px) {
+        grid-template-columns: minmax(0, 1fr) 18rem;
+        gap: var(--sp-8);
+        align-items: start;
+    }
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-7);
+}
+
+/* --- Header --- */
+
+.site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    height: var(--header-height);
+    background-color: var(--bg);
+}
+
+/* The theme's one ornament: a gold hairline under the header, fading out
+   towards both edges. */
+.site-header::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent) 20%, var(--accent) 80%, transparent);
+    opacity: 0.5;
+}
+
+.header-inner {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-4);
+    height: 100%;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--sp-4);
+
+    @include md { padding: 0 var(--sp-6); }
+
+    > nav { display: flex; height: 100%; align-items: stretch; }
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    z-index: 101;
+    color: var(--fg);
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: var(--fs-md);
+    letter-spacing: var(--tracking-label);
+    white-space: nowrap;
+
+    &:hover { color: var(--fg); }
+}
+
+.logo-mark {
+    width: 30px;
+    height: 30px;
+    flex-shrink: 0;
+}
+
+/* params.wordmark is white on transparent: darkened to ink in light mode. */
+.brand-wordmark { display: block; height: auto; }
+:root[data-theme="light"] .brand-wordmark { filter: invert(0.88) sepia(0.35); }
+.logo-wordmark { width: auto; height: 28px; }
+
+.logo-subtitle {
+    display: none;
+    padding-left: var(--sp-2);
+    color: var(--fg-muted);
+    font-size: var(--fs-xs);
+    font-weight: 500;
+    letter-spacing: var(--tracking-label);
+
+    @media (min-width: 1100px) { display: inline; }
+}
+
+/* Phone: logo left; the header buttons and the menu button right. */
+.menu-toggle {
+    order: 3;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    margin-right: calc(-1 * var(--sp-2));
+    background: none;
+    border: none;
+    color: var(--fg);
+    cursor: pointer;
+    z-index: 102;
+
+    svg { width: 20px; height: 20px; }
+}
+
+.header-actions {
+    order: 2;
+    display: flex;
+    align-items: center;
+    gap: var(--sp-1);
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.header-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    border-radius: var(--radius);
+    color: var(--fg-muted);
+    cursor: pointer;
+
+    &:hover { color: var(--fg); background-color: var(--tint); }
+}
+
+/* The theme toggle shows the mode it switches to. */
+.theme-toggle .icon-sun { display: none; }
+[data-theme="dark"] .theme-toggle {
+    .icon-sun { display: inline; }
+    .icon-moon { display: none; }
+}
+
+.nav-links {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin: 0;
+    padding: calc(var(--header-height) + var(--sp-4)) var(--sp-4) var(--sp-6);
+    list-style: none;
+    background-color: var(--bg);
+    overflow-y: auto;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.15s ease, visibility 0.15s;
+    z-index: 101;
+
+    &.active { visibility: visible; opacity: 1; }
+
+    li { border-bottom: 1px solid var(--rule); }
+
+    a {
+        display: block;
+        padding: var(--sp-4) 0;
+        color: var(--fg);
+        font-family: var(--font-display);
+        font-size: var(--fs-md);
+        letter-spacing: var(--tracking-label);
+    }
+
+    a.active { color: var(--accent); }
+}
+
+/* Dropdowns (kopi's navigation.js), kept simple. */
+.dropdown-menu { list-style: none; padding-left: var(--sp-4); display: none; }
+.dropdown.active .dropdown-menu { display: block; }
+
+@media (min-width: 900px) {
+    .menu-toggle { display: none; }
+
+    .header-inner > nav { order: 1; margin-left: var(--sp-5); }
+    .header-actions { order: 2; }
+
+    .nav-links {
+        position: static;
+        flex-direction: row;
+        align-items: stretch;
+        gap: var(--sp-6);
+        padding: 0;
+        background: none;
+        visibility: visible;
+        opacity: 1;
+        overflow: visible;
+
+        li { border: none; display: flex; }
+
+        a {
+            display: flex;
+            align-items: center;
+            padding: 0;
+            color: var(--fg-muted);
+            font-size: var(--fs-xs);
+            font-weight: 600;
+            border-bottom: 1px solid transparent;
+        }
+
+        a:hover { color: var(--fg); }
+
+        a.active {
+            color: var(--fg);
+            border-bottom-color: var(--accent);
+        }
+    }
+}
+
+/* --- Footer --- */
+
+.site-footer {
+    padding: var(--sp-7) 0 var(--sp-8);
+    border-top: 1px solid var(--rule);
+    color: var(--fg-muted);
+    font-size: var(--fs-sm);
+
+    p { margin-bottom: var(--sp-2); }
+    code { font-size: 0.95em; }
+}
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sp-6);
+
+    @include md {
+        flex-direction: row;
+        justify-content: space-between;
+        gap: var(--sp-8);
+
+        > :first-child { max-width: 36rem; }
+    }
+}
+
+.footer-title {
+    display: block;
+    margin-bottom: var(--sp-3);
+    color: var(--fg);
+    font-family: var(--font-display);
+    font-weight: 600;
+    letter-spacing: var(--tracking-label);
+}
+
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--sp-2) var(--sp-5);
+
+    a { color: var(--fg-muted); }
+    a:hover { color: var(--fg); }
+
+    a svg {
+        width: 1em;
+        height: 1em;
+        margin-right: 0.35em;
+        vertical-align: -0.125em;
+    }
+}
+
+.footer-disclaimer {
+    max-width: 75ch;
+    margin-top: var(--sp-6);
+    color: var(--fg-faint);
+    font-size: var(--fs-xs);
+}
+
+/* --- Breadcrumb and edit link --- */
+
+.breadcrumb-bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0 var(--sp-4);
+    margin-bottom: var(--sp-5);
+
+    .breadcrumb, .edit-link { margin: 0; }
+}
+
+.breadcrumb {
+    color: var(--fg-faint);
+    font-size: var(--fs-sm);
+
+    a { color: var(--fg-muted); }
+    a:hover { color: var(--fg); }
+    span { color: var(--fg-muted); }
+}
+
+.edit-link {
+    margin: 0 0 var(--sp-3) auto;
+    font-size: var(--fs-xs);
+    text-align: right;
+
+    a { color: var(--fg-faint); }
+    a:hover { color: var(--fg); }
+}
+
+/* --- Table of contents (page.html; sites can reuse it) ---
+   A plain list beside the page on wide screens, hidden below that. */
+
+.toc-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+
+    @media (min-width: 1100px) {
+        grid-template-columns: minmax(0, 1fr) 12rem;
+        gap: var(--sp-7);
+        align-items: start;
+    }
+}
+
+.toc-main { min-width: 0; }
+
+.toc {
+    display: none;
+
+    @media (min-width: 1100px) {
+        display: block;
+        grid-column: 2;
+        grid-row: 1;
+        position: sticky;
+        top: calc(var(--header-height) + var(--sp-5));
+        padding-left: var(--sp-4);
+        border-left: 1px solid var(--rule);
+        font-size: var(--fs-sm);
+    }
+
+    .toc-title {
+        margin: 0 0 var(--sp-3);
+        color: var(--fg-muted);
+        font-family: var(--font-display);
+        font-size: var(--fs-xs);
+        font-weight: 600;
+        letter-spacing: var(--tracking-label);
+    }
+
+    ol { margin: 0; padding: 0; list-style: none; }
+    li + li { margin-top: var(--sp-2); }
+
+    a { color: var(--fg-muted); }
+    a:hover { color: var(--fg); }
+}
+
+.toc-main [id] { scroll-margin-top: calc(var(--header-height) + var(--sp-4)); }

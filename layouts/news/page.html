@@ -1,14 +1,43 @@
 {{ define "main" }}
-{{ partial "breadcrumb.html" . }}
-<article>
-  <h1>{{ .Title }}</h1>
-  <p class="notice"><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time></p>
-  <div class="article-body prose-links">{{ .Content }}</div>
-  {{- /* author is {name, url}; a bare string is taken as a name without a link. */}}
-  {{- $author := .Params.author }}
-  {{- if not (reflect.IsMap $author) }}{{ $author = dict "name" $author }}{{ end }}
-  {{- with $author.name }}
-  <p class="news-signature prose-links">— <strong>{{ with $author.url }}<a href="{{ . }}">{{ $author.name }}</a>{{ else }}{{ $author.name }}{{ end }}</strong></p>
+{{- /*
+  The post's top-level headings become a table of contents, as on page.html.
+  Posts may use ## or ### for their sections: the shallowest level used wins.
+  Fragments nest headings under empty entries for the levels a post skips, so
+  levels 1 to 3 are walked, in order, and the empty ones dropped.
+*/ -}}
+{{- $headings := slice }}
+{{- range .Fragments.Headings }}
+  {{- if .Title }}{{ $headings = $headings | append . }}{{ end }}
+  {{- range .Headings }}
+    {{- if .Title }}{{ $headings = $headings | append . }}{{ end }}
+    {{- range .Headings }}{{ if .Title }}{{ $headings = $headings | append . }}{{ end }}{{ end }}
   {{- end }}
-</article>
+{{- end }}
+{{- $level := 0 }}
+{{- range $headings }}{{ if and (ge .Level 2) (or (eq $level 0) (lt .Level $level)) }}{{ $level = .Level }}{{ end }}{{ end }}
+{{- $toc := where $headings "Level" $level }}
+{{ partial "breadcrumb.html" . }}
+<div class="toc-layout">
+  {{- with $toc }}
+  <aside class="toc" aria-label="On this page">
+    <p class="toc-title">On this page</p>
+    <ol>
+      {{- range . }}
+      <li><a href="#{{ .ID }}">{{ .Title | plainify | safeHTML }}</a></li>
+      {{- end }}
+    </ol>
+  </aside>
+  {{- end }}
+  <article class="toc-main">
+    <h1>{{ .Title }}</h1>
+    <p class="notice"><time datetime="{{ .Date.Format "2006-01-02" }}">{{ .Date.Format "January 2, 2006" }}</time></p>
+    <div class="article-body prose-links">{{ .Content }}</div>
+    {{- /* author is {name, url}; a bare string is taken as a name without a link. */}}
+    {{- $author := .Params.author }}
+    {{- if not (reflect.IsMap $author) }}{{ $author = dict "name" $author }}{{ end }}
+    {{- with $author.name }}
+    <p class="news-signature prose-links">— <strong>{{ with $author.url }}<a href="{{ . }}">{{ $author.name }}</a>{{ else }}{{ $author.name }}{{ end }}</strong></p>
+    {{- end }}
+  </article>
+</div>
 {{ end }}
